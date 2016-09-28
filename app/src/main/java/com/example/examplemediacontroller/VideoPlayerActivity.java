@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -17,12 +18,13 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl {
+public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl, MediaPlayer.OnBufferingUpdateListener {
 
     private TextView mCompleteTv;
     private SurfaceView mVideoSurface;
     private MediaPlayer mPlayer;
     private VideoControllerView mController;
+    private int bufferPercentage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.setDataSource(this, Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
             mPlayer.setOnPreparedListener(this);
+            mPlayer.setOnBufferingUpdateListener(this);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (SecurityException e) {
@@ -92,13 +95,22 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
     }
 
     @Override
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        bufferPercentage = percent;
+        Log.i(getLocalClassName(), "percent" + " ------ " + percent);
+        if (percent == 100) {
+            mPlayer.setOnBufferingUpdateListener(null);
+        }
+    }
+
+    @Override
     public boolean canPause() {
         return true;
     }
 
     @Override
     public int getBufferPercentage() {
-        return 0;
+        return bufferPercentage;
     }
 
     @Override

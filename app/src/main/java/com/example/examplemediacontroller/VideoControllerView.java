@@ -18,6 +18,7 @@ package com.example.examplemediacontroller;
 
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -299,7 +300,7 @@ public class VideoControllerView extends FrameLayout {
                 mProgress.setProgress((int) pos);
             }
             int percent = mPlayer.getBufferPercentage();
-            mProgress.setSecondaryProgress(percent * 10);
+            mProgress.setSecondaryProgress(percent * duration / 100);
         }
 
         if (mEndTime != null)
@@ -483,6 +484,7 @@ public class VideoControllerView extends FrameLayout {
     }
 
     public interface MediaPlayerControl {
+
         void start();
 
         void pause();
