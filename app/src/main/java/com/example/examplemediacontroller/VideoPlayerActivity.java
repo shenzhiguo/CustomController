@@ -10,30 +10,37 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl {
 
-    SurfaceView videoSurface;
-    MediaPlayer player;
-    VideoControllerView controller;
+    private TextView mCompleteTv;
+    private SurfaceView mVideoSurface;
+    private MediaPlayer mPlayer;
+    private VideoControllerView mController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
-        
-        videoSurface = (SurfaceView) findViewById(R.id.videoSurface);
-        SurfaceHolder videoHolder = videoSurface.getHolder();
+
+        mCompleteTv = (TextView) findViewById(R.id.tv_complete);
+        mVideoSurface = (SurfaceView) findViewById(R.id.videoSurface);
+        SurfaceHolder videoHolder = mVideoSurface.getHolder();
         videoHolder.addCallback(this);
 
-        player = new MediaPlayer();
-        controller = new VideoControllerView(this);
+        mPlayer = new MediaPlayer();
+        mController = new VideoControllerView(this);
         
         try {
-            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            player.setDataSource(this, Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
-            player.setOnPreparedListener(this);
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mPlayer.setDataSource(this, Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"));
+            mPlayer.setOnPreparedListener(this);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (SecurityException e) {
@@ -43,11 +50,18 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        mCompleteTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        controller.show();
+        mController.show();
         return false;
     }
 
@@ -59,8 +73,8 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-    	player.setDisplay(holder);
-        player.prepareAsync();
+    	mPlayer.setDisplay(holder);
+        mPlayer.prepareAsync();
     }
 
     @Override
@@ -72,25 +86,13 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
     // Implement MediaPlayer.OnPreparedListener
     @Override
     public void onPrepared(MediaPlayer mp) {
-        controller.setMediaPlayer(this);
-        controller.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
-        player.start();
+        mController.setMediaPlayer(this);
+        mController.setAnchorView((FrameLayout) findViewById(R.id.videoSurfaceContainer));
+        mPlayer.start();
     }
-    // End MediaPlayer.OnPreparedListener
 
-    // Implement VideoMediaController.MediaPlayerControl
     @Override
     public boolean canPause() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekForward() {
         return true;
     }
 
@@ -101,43 +103,36 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
 
     @Override
     public int getCurrentPosition() {
-        return player.getCurrentPosition();
+        return mPlayer.getCurrentPosition();
     }
 
     @Override
     public int getDuration() {
-        return player.getDuration();
+        return mPlayer.getDuration();
     }
 
     @Override
     public boolean isPlaying() {
-        return player.isPlaying();
+        return mPlayer.isPlaying();
     }
 
     @Override
     public void pause() {
-        player.pause();
+        mPlayer.pause();
     }
 
     @Override
     public void seekTo(int i) {
-        player.seekTo(i);
+        mPlayer.seekTo(i);
     }
 
     @Override
     public void start() {
-        player.start();
-    }
-
-    @Override
-    public boolean isFullScreen() {
-        return false;
+        mPlayer.start();
     }
 
     @Override
     public void toggleFullScreen() {
         
     }
-    // End VideoMediaController.MediaPlayerControl
-
 }
