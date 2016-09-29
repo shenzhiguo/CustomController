@@ -1,7 +1,5 @@
 package com.example.examplemediacontroller;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -12,11 +10,10 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import java.io.IOException;
 
 public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callback, MediaPlayer.OnPreparedListener, VideoControllerView.MediaPlayerControl, MediaPlayer.OnBufferingUpdateListener {
 
@@ -98,9 +95,9 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
         bufferPercentage = percent;
         Log.i(getLocalClassName(), "percent" + " ------ " + percent);
-        if (percent == 100) {
-            mPlayer.setOnBufferingUpdateListener(null);
-        }
+//        if (percent == 100) {
+//            mPlayer.setOnBufferingUpdateListener(null);
+//        }
     }
 
     @Override
